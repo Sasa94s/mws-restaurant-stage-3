@@ -250,7 +250,7 @@ nav h1 a {
   display: flex;
   flex-flow: row;
   margin: 0;
-  max-width: 100%;
+  width: 100%;
 }
 
 #restaurants-list li h1 {
