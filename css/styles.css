@@ -358,6 +358,7 @@ nav h1 a {
   width: 50%;
   height: 100%;
   margin-right: 50%;
+  padding-top: 135px;
 }
 
 #reviews-container h2 {
@@ -392,4 +393,17 @@ nav h1 a {
 #restaurant-hours td {
   color: #666;
   font-size: 1.6em;
+}
+
+#skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  padding: 8px;
+  z-index: 9999;
+  font-size: 1.5em;
+}
+
+#skip-link:focus {
+  top: 0;
 }

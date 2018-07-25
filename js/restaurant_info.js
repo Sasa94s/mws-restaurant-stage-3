@@ -99,6 +99,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   }
   // fill reviews
   fillReviewsHTML();
+  // add skip link
+  addReviewsSkipLink();
 }
 
 /**
@@ -175,6 +177,21 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
+}
+
+/**
+ * Add skip link to reviews list
+ */
+addReviewsSkipLink = () => {
+  const header = document.getElementById('header');
+  const reviewsList = document.getElementById('reviews-list');
+
+  const skipLink = document.createElement('a');
+  skipLink.href = "#reviews-container";
+  skipLink.id = "skip-link";
+  skipLink.innerHTML = "Skip to Reviews";
+
+  header.appendChild(skipLink);
 }
 
 /**
