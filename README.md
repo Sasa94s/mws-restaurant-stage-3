@@ -39,6 +39,11 @@ Most of the code in this project has been written to the ES6 JavaScript specific
 
 
 ### Third-party Resources
+#### Responsiveness
 - [CSS-Tricks | A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
 - [Flexbox Cheatsheet](https://yoksel.github.io/flex-cheatsheet/)
 - [Picturefill](https://github.com/scottjehl/picturefill)
+#### Accessibility
+- [ARIA Landmarks Example](https://www.w3.org/TR/2018/NOTE-wai-aria-practices-1.1-20180726/examples/landmarks/)
+- [What is the purpose of the “role” attribute in HTML?](https://stackoverflow.com/questions/10403138/what-is-the-purpose-of-the-role-attribute-in-html?rq=1)
+- [Accessible Maps on the Web [Further Resource]](https://equalentry.com/accessible-maps-on-the-web/)

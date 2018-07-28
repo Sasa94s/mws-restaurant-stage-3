@@ -35,22 +35,6 @@ initMap = () => {
   });
 }  
  
-/* window.initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
-      self.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    }
-  });
-} */
-
 /**
  * Get current restaurant from page URL.
  */
@@ -80,6 +64,11 @@ fetchRestaurantFromURL = (callback) => {
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
+  const container = document.getElementById('restaurant-container');
+  // Defines a label for each region using attribute value that maybe available as a tooltip on some browsers.
+  // https://www.w3.org/TR/wai-aria-practices/examples/landmarks/region.html
+  container.title = `Address and Working Hours of ${restaurant.name} Restaurant`;
+
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
@@ -89,6 +78,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.alt = `${restaurant.name} Restaurant`;
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -99,8 +89,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   }
   // fill reviews
   fillReviewsHTML();
-  // add skip link
-  addReviewsSkipLink();
+
 }
 
 /**
@@ -126,11 +115,13 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = (reviews = self.restaurant.reviews, restaurant = self.restaurant.name) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
+
+  container.setAttribute('aria-label', `Reviews of ${restaurant} Restaurant`)
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -176,22 +167,29 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
+
+  // Applied to the last link in the set to indicate that it represents the current page.
+  //https://www.w3.org/TR/wai-aria-practices/examples/breadcrumb/index.html
+  li.setAttribute('aria-current', 'page');
+  
   breadcrumb.appendChild(li);
+
+  // add skip link
+  addReviewsSkipLink(breadcrumb);
 }
 
 /**
  * Add skip link to reviews list
  */
-addReviewsSkipLink = () => {
-  const header = document.getElementById('header');
-  const reviewsList = document.getElementById('reviews-list');
-
+addReviewsSkipLink = (nav) => {
+  const skipLinkItem = document.createElement('li');
   const skipLink = document.createElement('a');
   skipLink.href = "#reviews-container";
   skipLink.id = "skip-link";
   skipLink.innerHTML = "Skip to Reviews";
+  skipLinkItem.append(skipLink);
 
-  header.appendChild(skipLink);
+  nav.append(skipLinkItem);
 }
 
 /**
