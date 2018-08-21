@@ -2,9 +2,12 @@
   "name": "mws-restaurant-stage-1",
   "version": "1.0.0",
   "description": "This is a website for Restaurant Reviews",
+  "keywords": [],
   "main": "index.html",
   "scripts": {
     "start": "npm run lite",
+    "server": "node ./server/app.js server",
+    "test": "node debug ./server/app.js server",
     "lite": "lite-server"
   },
   "author": "@sasa94s",
@@ -12,5 +15,11 @@
   "devDependencies": {
     "browser-sync": "^2.24.6",
     "lite-server": "^2.4.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sasa94s/mws-restaurant-stage-2.git"
+  },
+  "linkedIn": "https://www.linkedin.com/in/sasa94s/",
+  "email": "abdelaleem@gmx.com"
 }
