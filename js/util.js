@@ -6,10 +6,10 @@ var dbPromise = idb.open('restaurants-info', 1, (db) => {
     }
 });
 
-function write(data) {
+function write(data, st) {
     dbPromise.then((db) => {
-        let tx = db.transaction('restaurants', 'readwrite');
-        let store = tx.objectStore('restaurants');
+        let tx = db.transaction(st, 'readwrite');
+        let store = tx.objectStore(st);
         for (restaurant in data) {
             console.log('[IndexedDB] Restaurant info before saved in IDB...', data[restaurant]);
             store.put(data[restaurant]);

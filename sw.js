@@ -76,7 +76,7 @@ self.addEventListener('fetch', (event) => {
                     clonedResponse.json()
                         .then((data) => {
                             console.log('[Service Worker] Restaurant JSON response...', data);
-                            write(data);
+                            write(data, 'restaurants');
                         });
                     return response;
                 })
