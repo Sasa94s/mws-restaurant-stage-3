@@ -14,9 +14,9 @@ const STATIC_FILES = [
     '/offline.html',
     '/img/sad.svg',
     '/img/refresh.svg',
-    '/js/dbhelper.js',
     '/js/idb.js',
     '/js/util.js',
+    '/js/dbhelper.js',
     '/js/index.js',
     '/js/main.js',
     '/css/styles.css'
@@ -76,12 +76,12 @@ self.addEventListener('fetch', (event) => {
                     clonedResponse.json()
                         .then((data) => {
                             console.log('[Service Worker] Restaurant JSON response...', data);
-                            write(data, 'restaurants');
+                            Utility.write(data, 'restaurants');
                         });
                     return response;
                 })
         );
-        console.log('[Service Worker] Fetching from REST server...', url, event);
+        console.log('[Service Worker] Fetching from REST server...', event);
     } else if (existsInArray(event.request.url, STATIC_FILES)) {
         event.respondWith(
             caches.match(event.request)

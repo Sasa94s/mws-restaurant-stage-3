@@ -36,7 +36,15 @@ class DBHelper {
       })
       .catch((error) => {
         console.log("[DBHelper] Error Fetching Restaurants", error);
-        callback(error, null);
+        Utility.readAll('restaurants')
+          .then((restaurants) => {
+            console.log("[IndexedDB] Fetch Restaurants", restaurants);
+            callback(null, restaurants);
+          })
+          .catch((error) => {
+            console.log("[IndexedDB] Error Fetching Restaurant", id, error);
+            callback(error, null);
+          });
       });
   }
 
@@ -56,7 +64,15 @@ class DBHelper {
       })
       .catch((error) => { // Restaurant does not exist in the database
         console.log("[DBHelper] Error Fetching Restaurant", id, error);
-        callback('Restaurant does not exist', null);
+        Utility.read(id, 'restaurants')
+          .then((restaurant) => {
+            console.log("[IndexedDB] Fetch Restaurant", id, restaurant);
+            callback(null, restaurant);
+          })
+          .catch((error) => {
+            console.log("[IndexedDB] Error Fetching Restaurant", id, error);
+            callback('Restaurant does not exist', null);
+          });
       });
   }
 

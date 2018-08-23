@@ -40,7 +40,7 @@ initMap = () => {
  */
 fetchRestaurantFromURL = (callback) => {
   if (self.restaurant) { // restaurant already fetched!
-    callback(null, self.restaurant)
+    callback(null, self.restaurant);
     return;
   }
   const id = getParameterByName('id');
@@ -50,12 +50,13 @@ fetchRestaurantFromURL = (callback) => {
   } else {
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
+      console.log("[Restaurant Info] Restaurant data...", restaurant, error);
       if (!restaurant) {
         console.error(error);
         return;
       }
       fillRestaurantHTML();
-      callback(null, restaurant)
+      callback(null, restaurant);
     });
   }
 }
@@ -121,7 +122,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews, restaurant = self.restaura
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
-  container.setAttribute('aria-label', `Reviews of ${restaurant} Restaurant`)
+  container.setAttribute('aria-label', `Reviews of ${restaurant} Restaurant`);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
