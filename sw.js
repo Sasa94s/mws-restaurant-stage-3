@@ -11,15 +11,18 @@ const CACHE_DYNAMIC_NAME = `dynamic_${CACHE_DYNAMIC_VERSION}`;
 const STATIC_FILES = [
     '/',
     '/index.html',
+    '/restaurant.html',
     '/offline.html',
     '/img/sad.svg',
     '/img/refresh.svg',
     '/js/idb.js',
     '/js/util.js',
     '/js/dbhelper.js',
-    '/js/index.js',
     '/js/main.js',
-    '/css/styles.css'
+    '/js/restaurant_info.js',
+    '/js/index.js',
+    '/css/styles.css',
+    '/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
