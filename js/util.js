@@ -33,8 +33,16 @@ class Utility {
         return Utility.dbPromise.then((db) => {
             let tx = db.transaction(st, 'readonly');
             let store = tx.objectStore(st);
-            console.log('[IndexedDB] Read data...', restaurant, store.get(restaurant));
+            console.log('[IndexedDB] Read data...', restaurant);
             return store.get(parseInt(restaurant));
+        })
+        .then((restaurant) => {
+            if (restaurant) {
+                console.log("[IndexedDB] Fetch Restaurant", restaurant);
+                return Promise.resolve(restaurant);
+            } else {
+                return Promise.reject('Can\'t find Restaurant in IndexedDB');
+            }
         });
     }
     
@@ -44,6 +52,14 @@ class Utility {
             let store = tx.objectStore(st);
             console.log('[IndexedDB] Read all data...', store.getAll());
             return store.getAll();
+        })
+        .then((restaurants) => {
+            if (restaurants.length) {
+                console.log("[IndexedDB] Fetch Restaurants", restaurants);
+                return Promise.resolve(restaurants);
+            } else {
+                return Promise.reject('Can\'t find Restaurant in IndexedDB', restaurants);
+            }
         });
     }
 }

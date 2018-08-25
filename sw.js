@@ -11,7 +11,6 @@ const CACHE_DYNAMIC_NAME = `dynamic_${CACHE_DYNAMIC_VERSION}`;
 const STATIC_FILES = [
     '/',
     '/index.html',
-    '/restaurant.html',
     '/offline.html',
     '/img/sad.svg',
     '/img/refresh.svg',
@@ -22,7 +21,9 @@ const STATIC_FILES = [
     '/js/restaurant_info.js',
     '/js/index.js',
     '/css/styles.css',
-    '/manifest.json'
+    '/manifest.json',
+    'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
+    'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -89,6 +90,7 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             caches.match(event.request)
         );
+        console.log('[Service Worker] Fetch from CACHE...', event);
     } else {
         event.respondWith(
             caches.match(event.request)
@@ -109,17 +111,17 @@ self.addEventListener('fetch', (event) => {
                                         // Storing a clone of network request in cache
                                         cache.put(event.request.url, serverResponse.clone());
                                         return serverResponse;
-                                    })
+                                    });
                             })
                             .catch((err) => {
-                                console.log("Can't connect!")
+                                console.log("Can't connect!", err);
                                 // Returning offline fallback page
                                 return caches.open(CACHE_STATIC_NAME)
                                     .then((cache) => {
                                         if(event.request.headers.get('accept').includes('text/html')) {
                                             return cache.match('/offline.html');
                                         }
-                                    })
+                                    });
                             })
                     }
                 })

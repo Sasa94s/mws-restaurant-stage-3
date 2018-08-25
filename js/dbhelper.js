@@ -20,29 +20,33 @@ class DBHelper {
     return (`${DBHelper.DATABASE_URL}/${id}`);
   }
 
+  static readApi(URL) {
+    return fetch(URL)
+      .then((response) => {
+        console.log("[DBHelper] Fetch JSON Response", response.clone().json());
+        return response.json();
+      });
+  }
+
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    fetch(DBHelper.DATABASE_URL)
-      .then((response) => {
-        console.log("[DBHelper] Fetch JSON Response", response.clone().json());
-        return response.json();
-      })
+    // Cache then Network Strategy
+    // fetch all restaurants with proper error handling.
+    Utility.readAll('restaurants')
       .then((restaurants) => {
-        console.log("[DBHelper] Fetch Restaurants", restaurants);
         callback(null, restaurants);
       })
       .catch((error) => {
-        console.log("[DBHelper] Error Fetching Restaurants", error);
-        Utility.readAll('restaurants')
-          .then((restaurants) => {
-            console.log("[IndexedDB] Fetch Restaurants", restaurants);
-            callback(null, restaurants);
+        console.warn("[IndexedDB] Error Fetching Restaurant", error);
+        DBHelper.readApi(DBHelper.DATABASE_URL)
+          .then((restaurant) => {
+            callback(null, restaurant);
           })
           .catch((error) => {
-            console.log("[IndexedDB] Error Fetching Restaurant", id, error);
+            console.warn("[DBHelper] Error Fetching Restaurant", error);
             callback(error, null);
           });
       });
@@ -52,25 +56,18 @@ class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    // fetch all restaurants with proper error handling.
-    fetch(DBHelper.RESTAURANT_DATABASE_URL(id))
-      .then((response) => {
-        console.log("[DBHelper] Fetch JSON Response", response.clone().json());
-        return response.json();
-      })
-      .then((restaurant) => { // Got the restaurant
-        console.log("[DBHelper] Fetch Restaurant", id, restaurant);
+    Utility.read(id, 'restaurants')
+      .then((restaurant) => {
         callback(null, restaurant);
       })
-      .catch((error) => { // Restaurant does not exist in the database
-        console.log("[DBHelper] Error Fetching Restaurant", id, error);
-        Utility.read(id, 'restaurants')
+      .catch((error) => { // Restaurant does not exist in API or Cache
+        console.warn("[IndexedDB] Error Fetching Restaurant", error);
+        DBHelper.readApi(DBHelper.RESTAURANT_DATABASE_URL(id))
           .then((restaurant) => {
-            console.log("[IndexedDB] Fetch Restaurant", id, restaurant);
             callback(null, restaurant);
           })
           .catch((error) => {
-            console.log("[IndexedDB] Error Fetching Restaurant", id, error);
+            console.warn("[DBHelper] Error Fetching Restaurant", id, error);
             callback('Restaurant does not exist', null);
           });
       });
@@ -189,7 +186,7 @@ class DBHelper {
       alt: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant)
       })
-      marker.addTo(newMap);
+      marker.addTo(map);
     return marker;
   } 
 
