@@ -123,7 +123,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews, restaurant = self.restaura
   container.appendChild(title);
 
   container.setAttribute('aria-label', `Reviews of ${restaurant} Restaurant`);
-
+  
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
@@ -147,7 +147,7 @@ createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = new Date(review.createdAt).toLocaleString("en-US");
   li.appendChild(date);
 
   const rating = document.createElement('p');

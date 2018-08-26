@@ -4,22 +4,65 @@
 class DBHelper {
 
   /**
-   * Database URL.
-   * Change this to restaurants.json file location on your server.
+   * Database URL
    */
   static get DATABASE_URL() {
     const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
-
   
   /**
-   * Restaurant DB URL.
+   * Get all restaurants
+   * Endpoint {/restaurants/}
    */
-  static RESTAURANT_DATABASE_URL(id) {
-    return (`${DBHelper.DATABASE_URL}/${id}`);
+  static get ALL_RESTAURANTS_URL() {
+    return (`${DBHelper.DATABASE_URL}/restaurants/`);
+  }
+  
+  /**
+   * Get a restaurant by id 
+   * Endpoint {/restaurants/<restaurant_id>}
+   */
+  static RESTAURANT_URL(restaurant_id) {
+    return (`${DBHelper.DATABASE_URL}/restaurants/${restaurant_id}`);
   }
 
+  /**
+   * Get favorite restaurants
+   * Endpoint {/restaurants/?is_favorite=true}
+   */
+  static get FAVORITE_RESTAURANTS_URL() {
+    return (`${DBHelper.DATABASE_URL}/restaurants/?is_favorite=true`);
+  }
+
+  /**
+   * Get all reviews for a restaurant
+   * Endpoint {/reviews/?restaurant_id=<restaurant_id>}
+   */
+  static ALL_RESTAURANT_REVIEWS_URL(restaurant_id) {
+    return (`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurant_id}`);
+  }
+
+  /**
+   * Get all restaurant reviews
+   * Endpoint {/reviews/}
+   */
+  static get ALL_REVIEWS_URL() {
+    return (`${DBHelper.DATABASE_URL}/reviews/`);
+  }
+
+  /**
+   * Get a restaurant review by id
+   * Endpoint {/reviews/<review_id>}
+   */
+  static REVIEW_URL(review_id) {
+    return (`${DBHelper.DATABASE_URL}/reviews/${review_id}`);
+  }
+
+  /**
+   * Fetch data from URL
+   * @returns Promise of response
+   */
   static readApi(URL) {
     return fetch(URL)
       .then((response) => {
@@ -37,13 +80,26 @@ class DBHelper {
     // fetch all restaurants with proper error handling.
     Utility.readAll('restaurants')
       .then((restaurants) => {
+        restaurants.map(restaurant => {
+          Utility.readByKey(restaurant.id, 'restaurant', 'reviews')
+            .then((reviews) => {
+              restaurant.reviews = reviews;
+            });
+        });
         callback(null, restaurants);
       })
       .catch((error) => {
         console.warn("[IndexedDB] Error Fetching Restaurant", error);
-        DBHelper.readApi(DBHelper.DATABASE_URL)
-          .then((restaurant) => {
-            callback(null, restaurant);
+        DBHelper.readApi(DBHelper.ALL_RESTAURANTS_URL)
+          .then((restaurants) => {
+            // Fetch all reviews of restaurants
+            restaurants.map(restaurant => {
+              DBHelper.readApi(DBHelper.ALL_RESTAURANT_REVIEWS_URL(restaurant.id))
+                .then((reviews) => {
+                  restaurant.reviews = reviews;
+                });
+            });
+            callback(null, restaurants);
           })
           .catch((error) => {
             console.warn("[DBHelper] Error Fetching Restaurant", error);
@@ -58,13 +114,22 @@ class DBHelper {
   static fetchRestaurantById(id, callback) {
     Utility.read(id, 'restaurants')
       .then((restaurant) => {
-        callback(null, restaurant);
+        console.log('[IDB] idb Restaurant by id...');
+        Utility.readByKey(id, 'restaurant', 'reviews')
+          .then((reviews) => {
+            restaurant.reviews = reviews;
+            callback(null, restaurant);
+          });
       })
       .catch((error) => { // Restaurant does not exist in API or Cache
         console.warn("[IndexedDB] Error Fetching Restaurant", error);
-        DBHelper.readApi(DBHelper.RESTAURANT_DATABASE_URL(id))
+        DBHelper.readApi(DBHelper.RESTAURANT_URL(id))
           .then((restaurant) => {
-            callback(null, restaurant);
+            DBHelper.readApi(DBHelper.ALL_RESTAURANT_REVIEWS_URL(restaurant.id))
+            .then((reviews) => {
+              restaurant.reviews = reviews;
+              callback(null, restaurant);
+            });
           })
           .catch((error) => {
             console.warn("[DBHelper] Error Fetching Restaurant", id, error);

@@ -72,7 +72,7 @@ function existsInArray(target, arr) {
 
 self.addEventListener('fetch', (event) => {
     console.log("[Service worker] Fetching something...", event);
-    if (event.request.url.indexOf(DBHelper.DATABASE_URL) > -1) {
+    if (event.request.url.indexOf(DBHelper.DATABASE_URL) === 0) {
         event.respondWith(
             fetch(event.request)
                 .then((response) => {
@@ -80,7 +80,14 @@ self.addEventListener('fetch', (event) => {
                     clonedResponse.json()
                         .then((data) => {
                             console.log('[Service Worker] Restaurant JSON response...', data);
-                            Utility.write(data, 'restaurants');
+                            if (event.request.url === DBHelper.ALL_RESTAURANTS_URL) {
+                                console.log('[SW] [IDB] Writing to Restaurant Object Store...', data);
+                                Utility.write(data, 'restaurants');
+                            }
+                            else if (event.request.url.indexOf(DBHelper.ALL_REVIEWS_URL) > -1) {
+                                console.log('[SW] [IDB] Writing to Reviews Object Store...', data);
+                                Utility.write(data, 'reviews');
+                            }
                         });
                     return response;
                 })
