@@ -118,6 +118,8 @@ class DBHelper {
         Utility.readByKey(id, 'restaurant', 'reviews')
           .then((reviews) => {
             restaurant.reviews = reviews;
+          })
+          .finally(() => {
             callback(null, restaurant);
           });
       })
@@ -128,8 +130,10 @@ class DBHelper {
             DBHelper.readApi(DBHelper.ALL_RESTAURANT_REVIEWS_URL(restaurant.id))
             .then((reviews) => {
               restaurant.reviews = reviews;
+            })
+            .finally(() => {
               callback(null, restaurant);
-            });
+            });;
           })
           .catch((error) => {
             console.warn("[DBHelper] Error Fetching Restaurant", id, error);
