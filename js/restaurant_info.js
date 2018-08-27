@@ -125,6 +125,7 @@ createReviewFormHTML = () => {
   txtName.id = 'review-name';
   txtName.setAttribute('type', 'text');
   txtName.classList.add('field');
+  txtName.toggleAttribute('required');
   const lblName = document.createElement('label');
   lblName.innerHTML = 'Name';
   lblName.setAttribute('for', 'review-name');
@@ -135,6 +136,7 @@ createReviewFormHTML = () => {
   txtDate.id = 'review-date';
   txtDate.setAttribute('type', 'date');
   txtDate.classList.add('field');
+  txtDate.toggleAttribute('required');
   const lblDate = document.createElement('label');
   lblDate.innerHTML = 'Date';
   lblDate.setAttribute('for', 'review-date');
@@ -150,6 +152,7 @@ createReviewFormHTML = () => {
     txtRating.appendChild(option);
   }
   txtRating.classList.add('field');
+  txtRating.toggleAttribute('required');
   const lblRating = document.createElement('label');
   lblRating.innerHTML = 'Rating';
   lblRating.setAttribute('for', 'review-rating');
@@ -161,6 +164,7 @@ createReviewFormHTML = () => {
   txtComments.setAttribute('rows', '4');
   txtComments.setAttribute('cols', '20');
   txtComments.classList.add('field');
+  txtComments.toggleAttribute('required');
   const lblComments = document.createElement('label');
   lblComments.innerHTML = 'Comments';
   lblComments.setAttribute('for', 'review-comments');
@@ -172,7 +176,7 @@ createReviewFormHTML = () => {
   btnSubmit.innerHTML = 'Submit Review';
   btnSubmit.setAttribute('type', 'submit');
   btnSubmit.classList.add('field');
-  btnSubmit.addEventListener('click', (e) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
     const review = {
       restaurant_id: parseInt(getParameterByName('id')),
