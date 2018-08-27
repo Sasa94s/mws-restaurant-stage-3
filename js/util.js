@@ -24,7 +24,11 @@ class Utility {
             let tx = db.transaction(st, 'readwrite');
             let store = tx.objectStore(st);
             console.log('[IndexedDB] All data before saved in IDB...', data);
-            data.map(record => store.put(record));
+            if (data.length === undefined) {
+                store.put(data);
+            } else {
+                data.map(record => store.put(record));
+            }
             return tx.complete;
         });
     }

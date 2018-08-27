@@ -174,7 +174,16 @@ createReviewFormHTML = () => {
   btnSubmit.classList.add('field');
   btnSubmit.addEventListener('click', (e) => {
     e.preventDefault();
-    
+    const review = {
+      restaurant_id: parseInt(getParameterByName('id')),
+      name: txtName.value,
+      rating: parseInt(txtRating.value),
+      comments: txtComments.value
+    };
+    DBHelper.postRestaurant(review)
+      .then((data) => console.log('POST NEW REVIEW', data))
+      .catch((error) => console.log('FAILED TO POST REVIEW', error));
+    location.reload(true); // reloads current page from server    
   });
 
   form.appendChild(legend);

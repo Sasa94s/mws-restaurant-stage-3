@@ -259,5 +259,23 @@ class DBHelper {
     return marker;
   }
 
+  static postRestaurant(review) {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(review),
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
+    };
+    return fetch(DBHelper.ALL_REVIEWS_URL, options)
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+
+  }
+
 }
 
