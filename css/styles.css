@@ -486,3 +486,24 @@ h6 {
   display: inline;
   font-size: 1.3em;
 }
+
+.review-form {
+  display: flex;
+  flex-flow: column;
+  border-bottom: 1px solid #d9d9d9;
+  width: 95%;
+  padding: 3%;
+  margin: 5px auto;
+}
+
+.hide {
+  display: none;
+}
+
+textarea {
+  resize: none;
+}
+
+.field {
+  margin: 5px 0 5px 0;
+}

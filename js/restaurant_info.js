@@ -113,6 +113,96 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
   }
 }
 
+createReviewFormHTML = () => {
+  const form = document.getElementById('review-form');
+  
+  // Form Title
+  const legend = document.createElement('h3');
+  legend.innerHTML = 'Add Review';
+  
+  // Review Name
+  const txtName = document.createElement('input');
+  txtName.id = 'review-name';
+  txtName.setAttribute('type', 'text');
+  txtName.classList.add('field');
+  const lblName = document.createElement('label');
+  lblName.innerHTML = 'Name';
+  lblName.setAttribute('for', 'review-name');
+  lblName.classList.add('field');
+
+  // Review Date
+  const txtDate = document.createElement('input');
+  txtDate.id = 'review-date';
+  txtDate.setAttribute('type', 'date');
+  txtDate.classList.add('field');
+  const lblDate = document.createElement('label');
+  lblDate.innerHTML = 'Date';
+  lblDate.setAttribute('for', 'review-date');
+  lblDate.classList.add('field');
+
+  // Review Rating
+  const txtRating = document.createElement('select');
+  txtRating.id = 'review-rating';
+  for (let i = 1; i <= 5; i++) {
+    const option = document.createElement('option');
+    option.value = i;
+    option.innerHTML = i;
+    txtRating.appendChild(option);
+  }
+  txtRating.classList.add('field');
+  const lblRating = document.createElement('label');
+  lblRating.innerHTML = 'Rating';
+  lblRating.setAttribute('for', 'review-rating');
+  lblRating.classList.add('field');
+
+  // Review Comments
+  const txtComments = document.createElement('textarea');
+  txtComments.id = 'review-comments';
+  txtComments.setAttribute('rows', '4');
+  txtComments.setAttribute('cols', '20');
+  txtComments.classList.add('field');
+  const lblComments = document.createElement('label');
+  lblComments.innerHTML = 'Comments';
+  lblComments.setAttribute('for', 'review-comments');
+  lblComments.classList.add('field');
+
+  // Review Submit
+  const btnSubmit = document.createElement('button');
+  btnSubmit.id = 'submit-review';
+  btnSubmit.innerHTML = 'Submit Review';
+  btnSubmit.setAttribute('type', 'submit');
+  btnSubmit.classList.add('field');
+  btnSubmit.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+  });
+
+  form.appendChild(legend);
+  form.appendChild(lblName);
+  form.appendChild(txtName);
+  form.appendChild(lblDate);
+  form.appendChild(txtDate);
+  form.appendChild(lblRating);
+  form.appendChild(txtRating);
+  form.appendChild(lblComments);
+  form.appendChild(txtComments);
+  form.appendChild(btnSubmit);
+
+  return form;
+}
+
+toggleReview = (event) => {
+  const form = createReviewFormHTML();
+  event.target.removeEventListener('click', toggleReview);
+  event.target.innerHTML = form.classList.contains('hide') ? "Hide Form" : "Show Form";
+  form.classList.toggle('hide');
+  
+  event.target.addEventListener('click', (event) => {
+    event.target.innerHTML = form.classList.contains('hide') ? "Hide Form" : "Show Form";
+    form.classList.toggle('hide');
+  });
+}
+
 /**
  * Create all reviews HTML and add them to the webpage.
  */
@@ -120,10 +210,17 @@ fillReviewsHTML = (reviews = self.restaurant.reviews, restaurant = self.restaura
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
-  container.appendChild(title);
-
-  container.setAttribute('aria-label', `Reviews of ${restaurant} Restaurant`);
   
+  const addReviewBtn = document.createElement('button');
+  addReviewBtn.innerHTML = 'Add Review';
+  addReviewBtn.title = `Add your own review about ${restaurant} Restaurant`;
+  addReviewBtn.classList.add('field');
+  addReviewBtn.addEventListener('click', toggleReview);
+  
+  container.appendChild(addReviewBtn);
+  container.appendChild(title);
+  container.setAttribute('aria-label', `Reviews of ${restaurant} Restaurant`);
+
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';

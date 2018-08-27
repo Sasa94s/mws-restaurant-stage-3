@@ -257,7 +257,7 @@ class DBHelper {
       })
       marker.addTo(map);
     return marker;
-  } 
+  }
 
 }
 
