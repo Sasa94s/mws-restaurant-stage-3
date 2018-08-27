@@ -180,11 +180,15 @@ createReviewFormHTML = () => {
       rating: parseInt(txtRating.value),
       comments: txtComments.value
     };
-    DBHelper.postRestaurant(review)
-      .then((data) => console.log('POST NEW REVIEW', data))
-      .catch((error) => console.log('FAILED TO POST REVIEW', error));
-    location.reload(true); // reloads current page from server    
+    DBHelper.postReviewOnline(review)
+      .then((data) => pushReviewsList(data))
+      .catch((error) => {
+        DBHelper.saveOfflineData(review);
+      });
   });
+  
+  // localStorage synchornization with Server when connection restablish
+  self.addEventListener('online', DBHelper.postReviewWhenOnline);
 
   form.appendChild(legend);
   form.appendChild(lblName);
@@ -212,6 +216,18 @@ toggleReview = (event) => {
   });
 }
 
+pushReviewsList = (reviews) => {
+  const ul = document.getElementById('reviews-list');
+  if (reviews.length === undefined) {
+    ul.appendChild(createReviewHTML(reviews));
+  } else {
+    reviews.forEach(review => {
+      ul.appendChild(createReviewHTML(review));
+    });
+  }
+  return ul;
+}
+
 /**
  * Create all reviews HTML and add them to the webpage.
  */
@@ -236,10 +252,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews, restaurant = self.restaura
     container.appendChild(noReviews);
     return;
   }
-  const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
-  });
+  const ul = pushReviewsList(reviews);
   container.appendChild(ul);
 }
 

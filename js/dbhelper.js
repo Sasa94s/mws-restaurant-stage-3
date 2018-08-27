@@ -251,31 +251,109 @@ class DBHelper {
    static mapMarkerForRestaurant(restaurant, map) {
     // https://leafletjs.com/reference-1.3.0.html#marker  
     const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
-      {title: restaurant.name,
+    {
+      title: restaurant.name,
       alt: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant)
-      })
-      marker.addTo(map);
+    });
+    marker.addTo(map);
     return marker;
   }
 
-  static postRestaurant(review) {
+  /**
+   * Send a POST request to server to create a review record
+   * @param {Review object to be sent to server} review 
+   * @returns Promise whether review has been sent or not
+   */
+  static postReviewOnline(review) {
+    console.log('Post review online...', review);
     const options = {
       method: 'POST',
       body: JSON.stringify(review),
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      })
+      headers: new Headers({ 'Content-Type': 'application/json' })
     };
+    // Sending POST request to server to create a review
     return fetch(DBHelper.ALL_REVIEWS_URL, options)
       .then((response) => {
+        console.log('POST NEW REVIEW', response.clone().json());
         return response.json();
       })
       .catch((error) => {
+        console.log('FAILED TO POST REVIEW', error);
         return Promise.reject(error);
       });
-
   }
 
+  /**
+   * Posting several reviews posted offline
+   * @param {Promise of resolved array of promises} reviews 
+   */
+  static postReviewsOnline(reviews) {
+    return reviews.then(reviewArray => { // Array
+      if (!reviewArray || reviewArray.length === undefined) return Promise.reject('No offline data.');
+
+      reviewArray.forEach(reviewPromise => { // Promise
+        reviewPromise.then(review => { // Value
+          return DBHelper.postReviewOnline(review);
+        });
+      });
+    });
+  }
+
+  /**
+   * Save data on localStorage for to access it when connection restablish
+   * @param {Data to be saved locally} data 
+   * @returns key of data stored
+   */
+  static saveOfflineData(data) {
+    const strTime = new Date().toTimeString();
+    if (data.length === undefined) {
+      localStorage.setItem(strTime, JSON.stringify(data));
+    } else {
+      data.map(d => localStorage.setItem(strTime, JSON.stringify(d)));
+    }
+    return strTime;
+  }
+
+  static getOfflineData(key) {
+    const data = JSON.parse(localStorage.getItem(key));
+    if (data) {
+      localStorage.removeItem(key);
+      return Promise.resolve(data);
+    } else {
+      return Promise.reject(`${key} is not found in localStorage`);
+    }
+  }
+
+  /**
+   * Gets all data stored in localStorage
+   * @returns Promise for each item stored
+   */
+  static getAllOfflineData() {
+    let offlineList = [];
+    // Reference https://stackoverflow.com/questions/8419354/get-html5-localstorage-keys
+    for (let i = 0, len = localStorage.length; i < len; ++i) {
+      offlineList.push(DBHelper.getOfflineData(localStorage.key(i)).then(review => { return review; }));
+    }
+    return offlineList.length > 0 
+      ? Promise.resolve(offlineList) : Promise.reject('localStorage is empty');
+  }
+
+  /**
+   * 
+   */
+  static postReviewWhenOnline() {
+    DBHelper.postReviewsOnline(
+      DBHelper.getAllOfflineData()
+      .then(offlineList => {
+        // Return array of resolved promises
+        return offlineList.map(offPromise => {
+          // Return resolved promise when item stored is valid to be sent
+          return offPromise.then(offItem => { return offItem; })
+                            .catch(error => console.warn(error));
+        })
+      })
+    ).catch(error => console.log(error)); // No offline data, localStorage is empty
+  }
 }
 
