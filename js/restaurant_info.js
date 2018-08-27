@@ -177,18 +177,23 @@ createReviewFormHTML = () => {
     const review = {
       restaurant_id: parseInt(getParameterByName('id')),
       name: txtName.value,
+      createdAt: new Date().getTime(),
       rating: parseInt(txtRating.value),
       comments: txtComments.value
     };
     DBHelper.postReviewOnline(review)
       .then((data) => pushReviewsList(data))
       .catch((error) => {
+        alert('Review will be available when online');
         DBHelper.saveOfflineData(review);
       });
   });
   
   // localStorage synchornization with Server when connection restablish
-  self.addEventListener('online', DBHelper.postReviewWhenOnline);
+  // Passing callback function `pushReviewsList`to add item to UI when sent to server
+  self.addEventListener('online', (e) => {
+    DBHelper.postReviewWhenOnline(pushReviewsList);
+  });
 
   form.appendChild(legend);
   form.appendChild(lblName);
@@ -266,7 +271,7 @@ createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = new Date(review.createdAt).toLocaleString("en-US");
+  date.innerHTML = `Date: ${new Date(review.createdAt).toLocaleString("en-US")}`;
   li.appendChild(date);
 
   const rating = document.createElement('p');

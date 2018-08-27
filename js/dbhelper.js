@@ -262,7 +262,7 @@ class DBHelper {
 
   /**
    * Send a POST request to server to create a review record
-   * @param {Review object to be sent to server} review 
+   * @review {Review object to be sent to server}  
    * @returns Promise whether review has been sent or not
    */
   static postReviewOnline(review) {
@@ -286,7 +286,7 @@ class DBHelper {
 
   /**
    * Posting several reviews posted offline
-   * @param {Promise of resolved array of promises} reviews 
+   * @reviews {Promise of resolved array of promises}  
    */
   static postReviewsOnline(reviews) {
     return reviews.then(reviewArray => { // Array
@@ -306,7 +306,7 @@ class DBHelper {
    * @returns key of data stored
    */
   static saveOfflineData(data) {
-    const strTime = new Date().toTimeString();
+    const strTime = new Date().getTime();
     if (data.length === undefined) {
       localStorage.setItem(strTime, JSON.stringify(data));
     } else {
@@ -342,14 +342,14 @@ class DBHelper {
   /**
    * 
    */
-  static postReviewWhenOnline() {
+  static postReviewWhenOnline(addToUI) {
     DBHelper.postReviewsOnline(
       DBHelper.getAllOfflineData()
       .then(offlineList => {
         // Return array of resolved promises
         return offlineList.map(offPromise => {
           // Return resolved promise when item stored is valid to be sent
-          return offPromise.then(offItem => { return offItem; })
+          return offPromise.then(offItem => { addToUI(offItem); return offItem; })
                             .catch(error => console.warn(error));
         })
       })
