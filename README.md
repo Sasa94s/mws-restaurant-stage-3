@@ -5,11 +5,9 @@ by Mostafa Elsheikh, in fulfillment of Udacity's [Mobile Web Specialist Nanodegr
 
 ## Project Overview: Stage 2
 
->Previously, I have worked on a static design that lacks accessibility and convert the design to be responsive on different sized displays and accessible for screen reader use. I have added a service worker to begin the process of creating a seamless offline experience for your users.
+>Previously, I have worked on a static design that lacks accessibility and convert the design to be responsive on different sized displays and accessible for screen reader use. I have added a service worker to begin the process of creating a seamless offline experience for your users. Then, I have begun by using AJAX with Fetch API to request JSON data from backend server, and stored the site content offline using IndexedDB, which is our app shell architecture to optimize performance and populate the content of our PWA.
 
-In **Stage Two**, I have begin by using asynchronous JavaScript to request JSON data from the backend server. Received data from the server is then stored in an offline database using IndexedDB, which will create an app shell architecture. The site will be optimized to meet performance benchmarks, which are tested using [Lighthouse](https://developers.google.com/web/tools/lighthouse/).
-
-A [Node development server](https://github.com/udacity/mws-restaurant-stage-2) and API is already provided to make JSON requests to the server. Core functionality of the application will not change, only the source of the data will change. We're using the Fetch API to make requests to the backend server to populate the content of our PWA.
+In **Stage Three**, I have added a validated form submission that allows user to add a review for a restaurant even if there is lack of connectivity, It takes the user submission and store it until the connection restablishes to send back a POST request to backend server. I have added a favorite button that sends PUT request to backend server to update the state of a restaurant, which works offline as well.
 
 ### About
 
