@@ -36,6 +36,14 @@ class DBHelper {
   }
 
   /**
+   * Favorite/Unfavorite a restaurant
+   * Endpoint {/restaurants/?is_favorite=<status>}
+   */
+  static UPDATE_FAVORITE_RESTAURANTS_URL(restaurant_id, status) {
+    return (`${DBHelper.DATABASE_URL}/restaurants/${restaurant_id}/?is_favorite=${status}`);
+  }
+
+  /**
    * Get all reviews for a restaurant
    * Endpoint {/reviews/?restaurant_id=<restaurant_id>}
    */
@@ -339,9 +347,6 @@ class DBHelper {
       ? Promise.resolve(offlineList) : Promise.reject('localStorage is empty');
   }
 
-  /**
-   * 
-   */
   static postReviewWhenOnline(addToUI) {
     DBHelper.postReviewsOnline(
       DBHelper.getAllOfflineData()
@@ -354,6 +359,13 @@ class DBHelper {
         })
       })
     ).catch(error => console.log(error)); // No offline data, localStorage is empty
+  }
+
+  static updateFavoriteStatus(restaurant_id, status) {
+    return fetch(DBHelper.UPDATE_FAVORITE_RESTAURANTS_URL(restaurant_id, status), { method: 'PUT', body: restaurant_id })
+      .then(() => {
+        console.log('FAVORITE HAS BEEN UPDATED!');
+      });
   }
 }
 

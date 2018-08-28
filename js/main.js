@@ -165,14 +165,32 @@ const createRestaurantHTML = (restaurant) => {
   const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);
-
+  
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);
-
+  
   const address = document.createElement('p');
   address.innerHTML = restaurant.address;
   li.append(address);
+
+  const favorite = document.createElement('button');
+  favorite.innerHTML = '❤';
+  favorite.className = 'fav-btn';
+  favorite.classList.toggle('active', restaurant.is_favorite);
+  favorite.addEventListener('click', (e) => {
+    restaurant.is_favorite = !restaurant.is_favorite;
+    DBHelper.updateFavoriteStatus(restaurant.id, restaurant.is_favorite)
+      .then((response) => {
+        console.log(restaurant.is_favorite);
+        favorite.classList.toggle('active', restaurant.is_favorite);
+        return response;
+      })
+      .catch((error) => {
+        console.log('Favorite error', error);
+      });
+  });
+  li.append(favorite);
 
   const more = document.createElement('a');
   more.innerHTML = 'View Details';

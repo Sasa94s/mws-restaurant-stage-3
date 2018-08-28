@@ -507,3 +507,14 @@ textarea {
 .field {
   margin: 5px 0 5px 0;
 }
+
+.fav-btn {
+  display: block;
+  font-size: 1.25rem;
+  color: #5E5E5E;
+  margin: auto;
+}
+
+.fav-btn.active {
+  color: #DC3232;
+}
