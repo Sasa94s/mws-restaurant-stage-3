@@ -178,6 +178,7 @@ const createRestaurantHTML = (restaurant) => {
   favorite.innerHTML = '❤';
   favorite.className = 'fav-btn';
   favorite.classList.toggle('active', restaurant.is_favorite);
+  favorite.setAttribute('aria-label', `Click to add ${restaurant.name} to favorites`);
   favorite.addEventListener('click', (e) => {
     restaurant.is_favorite = !restaurant.is_favorite;
     Utility.read(restaurant.id, 'restaurants').then(() => {
@@ -202,7 +203,7 @@ const createRestaurantHTML = (restaurant) => {
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
 
-  return li
+  return li;
 }
 
 /**
