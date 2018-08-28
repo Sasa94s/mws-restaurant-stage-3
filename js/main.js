@@ -156,7 +156,7 @@ const createRestaurantHTML = (restaurant) => {
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.srcset = `${imgURL.substr(0, imgURL.lastIndexOf('.'))}-300${imgURL.substr(imgURL.lastIndexOf('.'))}`;
+  image.srcset = `${imgURL.substr(0, imgURL.lastIndexOf('_'))}_1x${imgURL.substr(imgURL.lastIndexOf('.'))}`;
   image.alt = `${restaurant.name} Restaurant`;
   picture.append(image);
   
@@ -180,14 +180,19 @@ const createRestaurantHTML = (restaurant) => {
   favorite.classList.toggle('active', restaurant.is_favorite);
   favorite.addEventListener('click', (e) => {
     restaurant.is_favorite = !restaurant.is_favorite;
+    Utility.read(restaurant.id, 'restaurants').then(() => {
+        Utility.write(restaurant, 'restaurants');
+    })
+    .catch(error => console.log(error));
     DBHelper.updateFavoriteStatus(restaurant.id, restaurant.is_favorite)
       .then((response) => {
-        console.log(restaurant.is_favorite);
-        favorite.classList.toggle('active', restaurant.is_favorite);
         return response;
       })
       .catch((error) => {
-        console.log('Favorite error', error);
+        console.log('Favorite network error', error);
+      })
+      .finally(() => {
+        favorite.classList.toggle('active', restaurant.is_favorite);
       });
   });
   li.append(favorite);

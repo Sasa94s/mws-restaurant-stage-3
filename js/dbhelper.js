@@ -250,7 +250,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}.jpg`);
+    return (`/img/${restaurant.photograph}_2x.webp`);
   }
 
   /**
@@ -363,8 +363,9 @@ class DBHelper {
 
   static updateFavoriteStatus(restaurant_id, status) {
     return fetch(DBHelper.UPDATE_FAVORITE_RESTAURANTS_URL(restaurant_id, status), { method: 'PUT', body: restaurant_id })
-      .then(() => {
-        console.log('FAVORITE HAS BEEN UPDATED!');
+      .then((response) => {
+        // console.log('FAVORITE HAS BEEN UPDATED!');
+        return response;
       });
   }
 }
