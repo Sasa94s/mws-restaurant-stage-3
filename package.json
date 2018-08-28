@@ -5,10 +5,11 @@
   "keywords": [],
   "main": "index.html",
   "scripts": {
-    "start": "npm run lite",
+    "start": "http-server -a localhost -p 3000 -c-1 -g",
     "server": "node ./server/app.js server",
     "test": "node debug ./server/app.js server",
-    "lite": "lite-server"
+    "lite": "lite-server",
+    "install-server": "npm install -g http-server && cd server/ && npm install && cd .."
   },
   "author": "@sasa94s",
   "license": "ISC",
@@ -18,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/sasa94s/mws-restaurant-stage-2.git"
+    "url": "git://github.com/sasa94s/mws-restaurant-stage-3.git"
   },
   "linkedIn": "https://www.linkedin.com/in/sasa94s/",
   "email": "abdelaleem@gmx.com"

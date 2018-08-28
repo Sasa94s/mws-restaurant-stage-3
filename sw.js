@@ -11,6 +11,7 @@ const CACHE_DYNAMIC_NAME = `dynamic_${CACHE_DYNAMIC_VERSION}`;
 const STATIC_FILES = [
     '/',
     '/index.html',
+    '/restaurant.html',
     '/offline.html',
     '/img/sad.svg',
     '/img/refresh.svg',
@@ -77,25 +78,30 @@ self.addEventListener('fetch', (event) => {
             fetch(event.request)
                 .then((response) => {
                     if (event.request.method === 'PUT') {
-                        console.log('[SW] PUT', response.clone());
-                        if (event.request.url.indexOf(DBHelper.ALL_RESTAURANTS_URL) === 0) {
-                            restaurant_id = event.request.url.substr(DBHelper.ALL_RESTAURANTS_URL.length);
-                            restaurant_id = restaurant_id.substr(0, restaurant_id.indexOf('/'));
-                            if (!DBHelper.UPDATE_FAVORITE_RESTAURANTS_URL(restaurant_id) === event.request.url) {
-                                return response;
-                            }
-
-                            Utility.read(restaurant_id, 'restaurants')
-                            .then(restaurant => {
-                                isFavNow = event.request.url.substr(event.request.url.lastIndexOf('=')+1);
-                                isFavNow = isFavNow == 'true' ? true : false;
-                                restaurant.is_favorite = isFavNow;
-                                console.log(restaurant, restaurant.is_favorite, isFavNow);
-                                Utility.write(restaurant, 'restaurants');
-                                return response;
-                            });
-                        }
+                        return response;
                     }
+                    // if (event.request.method === 'PUT') {
+                    //     console.log('[SW] PUT', response.clone());
+                    //     if (event.request.url.indexOf(DBHelper.ALL_RESTAURANTS_URL) === 0) {
+                    //         restaurant_id = event.request.url.substr(DBHelper.ALL_RESTAURANTS_URL.length);
+                    //         restaurant_id = restaurant_id.substr(0, restaurant_id.indexOf('/'));
+                    //         if (!DBHelper.UPDATE_FAVORITE_RESTAURANTS_URL(restaurant_id) === event.request.url) {
+                    //             return response;
+                    //         }
+
+                    //         Utility.read(restaurant_id, 'restaurants')
+                    //         .then(restaurant => {
+                    //             isFavNow = event.request.url.substr(event.request.url.lastIndexOf('=')+1);
+                    //             isFavNow = isFavNow == 'true' ? true : false;
+                    //             restaurant.is_favorite = isFavNow;
+                    //             Utility.write(restaurant, 'restaurants');
+                    //             return response;
+                    //         })
+                    //         .catch(error => {
+                    //             console.log(error);
+                    //         });
+                    //     }
+                    // }
                     const clonedResponse = response.clone();
                     clonedResponse.json()
                         .then((data) => {
@@ -120,7 +126,7 @@ self.addEventListener('fetch', (event) => {
         console.log('[Service Worker] Fetch from CACHE...', event);
     } else {
         event.respondWith(
-            caches.match(event.request)
+            caches.match(event.request, { ignoreSearch: true })
                 .then((localResponse) => {
                     // If the response exists in the cache
                     if(localResponse) {

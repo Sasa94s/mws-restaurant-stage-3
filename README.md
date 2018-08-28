@@ -22,23 +22,19 @@ Please make sure you have these installed before proceeding forward.
 
 1. Download appropriate [Node.js installer](https://nodejs.org/en/download/) for your platform
 2. Open your Terminal/CLI
-3. Install App dependencies
+3. Install local client & API server dependencies
     ```Install dependencies
-    npm install
+    npm run install-server
     ```
-4. Install local API server dependencies
-    ```Install local API server dependencies
-    cd server/ && npm install && cd ..
-    ```
-5. Run local API server
+4. Run local API server
     ```Run local API server
     npm run server
     ```
-6. Open another Terminal and Run local client server
+5. Open another Terminal and Run local client server
     ```Run local client server
     npm start
     ```
-7. Open http://localhost:3000 from your browser
+6. Open http://localhost:3000 from your browser
 
 
 ### Preview
